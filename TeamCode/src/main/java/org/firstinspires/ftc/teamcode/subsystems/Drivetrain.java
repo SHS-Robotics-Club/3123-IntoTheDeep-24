@@ -14,7 +14,7 @@ import org.firstinspires.ftc.robotcore.external.Telemetry;
  *     void init() - initializes the components of the drivetrain
  *     void reportTelemetry() - reports drivetrain telemetry information
  *     void operate(powerX, powerY, powerRotate, powerFactor) - applies power to the motors
- *         [based on video FTC Programming 9 of n: Deadline & Toggle Drive Power by Brandon Pacewic
+ *         [based on video "FTC Programming 9 of n: Deadline & Toggle Drive Power" by Brandon Pacewic
  *          see https://www.youtube.com/watch?v=06dOk1S6oEg]
  *
  * VERSION   DATE     WHO  DETAIL
