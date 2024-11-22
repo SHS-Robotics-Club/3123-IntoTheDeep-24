@@ -8,6 +8,18 @@ import org.firstinspires.ftc.robotcore.external.Telemetry;
 
 /**
  * The Drivetrain class defines all the drivetrain components for a robot.
+ *
+ * PUBLIC METHODS:
+ *     Drivetrain(hardwareMap) - constructor for instantiating a drivetrain
+ *     void init() - initializes the components of the drivetrain
+ *     void reportTelemetry() - reports drivetrain telemetry information
+ *     void operate(powerX, powerY, powerRotate, powerFactor) - applies power to the motors
+ *         [based on video FTC Programming 9 of n: Deadline & Toggle Drive Power by Brandon Pacewic
+ *          see https://www.youtube.com/watch?v=06dOk1S6oEg]
+ *
+ * VERSION   DATE     WHO  DETAIL
+ * 00.01.00  11Nov24  SEB  Initial release
+ *
  */
 public class Drivetrain {
 
