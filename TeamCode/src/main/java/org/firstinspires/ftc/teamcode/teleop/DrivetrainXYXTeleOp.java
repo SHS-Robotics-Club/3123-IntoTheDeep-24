@@ -50,6 +50,9 @@ public class DrivetrainXYXTeleOp extends OpMode {
         // Initialize settings
         drivetrainPowerFactor = DRIVETRAIN_LOW_POWER_FACTOR;
 
+        // Grab current time for use later
+        previousPowerRequestTime = missionTimer.getTimeMS();
+
     }
 
     /**
