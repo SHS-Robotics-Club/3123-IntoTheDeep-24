@@ -91,6 +91,8 @@ public class DrivetrainXYXTeleOp extends OpMode {
         // Request power application to drivetrain
         robot.drivetrain.operate(drivetrainPowerDirX, drivetrainPowerDirY, drivetrainPowerRotate, drivetrainPowerFactor);
 
+        // Report telemetry
+        robot.reportTelemetry();
     }
 
 }
