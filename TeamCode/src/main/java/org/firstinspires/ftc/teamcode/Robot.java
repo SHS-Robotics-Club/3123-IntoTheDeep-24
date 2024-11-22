@@ -10,6 +10,14 @@ import org.firstinspires.ftc.teamcode.utils.MissionTimer;
 /**
  * This class consists of all the subsystems and utilities used to form a robot.
  *
+ * PUBLIC METHODS:
+ *     Robot(hardwareMap) - constructor for instantiating a robot
+ *     void init() - initializes the subsystems and utilities of the robot
+ *     void reportTelemetry() - reports robot telemetry information
+ *
+ * VERSION   DATE     WHO  DETAIL
+ * 00.01.00  11Nov24  SEB  Initial release
+ *
  */
 public class Robot {
 
