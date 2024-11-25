@@ -7,7 +7,7 @@ import org.firstinspires.ftc.teamcode.utils.MissionTimer;
 
 //@Disabled
 // Possible Groups: Competition, Development, Test, Training
-@TeleOp(group = "Development", name = "DrivetrainOnly")
+@TeleOp(name = "DrivetrainXYXTeleOp", group = "Development")
 
 /**
  * DrivetrainXYXTeleOp
@@ -18,19 +18,21 @@ public class DrivetrainXYXTeleOp extends OpMode {
 
     public static final double DRIVETRAIN_LOW_POWER_FACTOR = 0.6;
     public static final double DRIVETRAIN_HIGH_POWER_FACTOR = 0.8;
+    public static final double DRIVETRAIN_TURBO_POWER_FACTOR = 1.0;
     public static final double DEBOUNCE_DELAY = 500.0;
 
     // Define as instance of a Robot class as null
     public Robot robot;
     // Define TeleOp utilities
-    public MissionTimer missionTimer;
+    private MissionTimer missionTimer;
 
     // Define local parameters
-    double drivetrainPowerDirX;
-    double drivetrainPowerDirY;
-    double drivetrainPowerRotate;
-    double drivetrainPowerFactor;
-    double previousPowerRequestTime;
+    private double drivetrainPowerDirX;
+    private double drivetrainPowerDirY;
+    private double drivetrainPowerRotate;
+    private double drivetrainPowerFactor = DRIVETRAIN_LOW_POWER_FACTOR;
+    private double buttonAPressStartTime = 0;
+    private boolean buttonAPreviouslyPressed = false;
 
     /**
      * Instantiates and initializes the subsystems and utilities
@@ -42,17 +44,17 @@ public class DrivetrainXYXTeleOp extends OpMode {
         // Instantiate a robot using the hardwareMap constructor
         robot = new Robot(hardwareMap);
         // Instantiate TeleOp utilities
-        MissionTimer missionTimer = new MissionTimer();
+        missionTimer = new MissionTimer();
+        
         // Initialize robot
         robot.init();
         // Initialize TeleOp utilities
         missionTimer.init();
-        // Initialize settings
-        drivetrainPowerFactor = DRIVETRAIN_LOW_POWER_FACTOR;
 
-        // Grab current time for use later
-        previousPowerRequestTime = missionTimer.getTimeMS();
-
+        // Set default telemetry
+        telemetry.addData("Status", "Initialized");
+        telemetry.addData("Power Factor", powerFactor);
+        telemetry.update(); // Send "Initialized" and powerFactor to the Driver Station
     }
 
     /**
@@ -71,18 +73,36 @@ public class DrivetrainXYXTeleOp extends OpMode {
     @Override
     public void loop() {
 
-        //  Sample gamepad1 button A
-        if (gamepad1.a) {  // Respond to drivetrain power factor change request
-            // Check to make sure that the debounce time has expired
-            if (missionTimer.getTimeMS() > (previousPowerRequestTime + DEBOUNCE_DELAY)) {
-                // Toggle drivetrain power factor
-                drivetrainPowerFactor = (drivetrainPowerFactor == DRIVETRAIN_LOW_POWER_FACTOR) ?
-                        DRIVETRAIN_HIGH_POWER_FACTOR : DRIVETRAIN_LOW_POWER_FACTOR;
-                // Save off power change request time
-                previousPowerRequestTime = missionTimer.getTimeMS();
-            }
+        double currentTime = missionTime.getTimeMS();
 
+        /////  
+        //  Gamepad1 Button A
+        //
+        boolean buttonAPressed = gamepad1.a;
+        
+        if (buttonAPressed && !buttonAPreviouslyPressed) {  // Respond to drivetrain power factor change request
+             // Button just pressed, record the time
+            buttonAPressStartTime = currentTime;
+        } else if (!buttonAPressed && buttonAPreviouslyPressed) {
+            // Button just released, calculate the press duration
+            double pressDuration = currentTime - buttonAPressStartTime;
+
+            if (pressDuration >= LONG_PRESS_THRESHOLD_MS) {
+                // Long press: set powerFactor to TURBO_POWER_FACTOR
+                powerFactor = TURBO_POWER_FACTOR;
+            } else {
+                // Brief press: toggle between LOW_POWER_FACTOR and HIGH_POWER_FACTOR
+                if (powerFactor == LOW_POWER_FACTOR) {
+                    powerFactor = HIGH_POWER_FACTOR;
+                } else if (powerFactor == HIGH_POWER_FACTOR || powerFactor == TURBO_POWER_FACTOR) {
+                    powerFactor = LOW_POWER_FACTOR;
+                }
+            }
         }
+
+        // Update button state
+        buttonAPreviouslyPressed = buttonAPressed;
+
 
         // Sample gamepad1 joysticks
         drivetrainPowerDirX = gamepad1.left_stick_x;
