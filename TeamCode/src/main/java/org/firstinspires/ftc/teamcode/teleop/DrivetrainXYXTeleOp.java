@@ -113,6 +113,10 @@ public class DrivetrainXYXTeleOp extends OpMode {
 
         // Report telemetry
         robot.reportTelemetry();
+        // Display telemetry
+        telemetry.addData("Power Factor", powerFactor);
+        telemetry.addData("Press Duration (ms)", currentTime - buttonPressStartTime);
+        telemetry.update();
     }
 
 }
