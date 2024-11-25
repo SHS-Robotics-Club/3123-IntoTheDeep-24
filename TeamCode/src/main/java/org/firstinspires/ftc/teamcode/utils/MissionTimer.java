@@ -13,7 +13,8 @@ import static com.qualcomm.robotcore.util.ElapsedTime.Resolution.MILLISECONDS;
  *
  * VERSION   DATE     WHO  DETAIL
  * 00.01.00  11Nov24  SEB  Initial release
- *
+ * 00.01.01  25Nov24  SEB  Added hasElapsed() and isWithinInterval() methods.
+ *                         Also minor edits.
  */
 public class MissionTimer {
 
@@ -27,7 +28,7 @@ public class MissionTimer {
     public MissionTimer() {
 
         // Instantiate a MissionTimer
-        ElapsedTime missionTimer = new ElapsedTime(MILLISECONDS);
+        missionTimer = new ElapsedTime(MILLISECONDS);
     }
 
     /**
@@ -39,12 +40,42 @@ public class MissionTimer {
 
     /**
      * Reads the current timer value
-     * @return
+     * @return time since last reset in milliseconds
      */
     public double getTimeMS() {
 
         // Get current time
-        return missionTimer.time();
+        return missionTimer.milliseconds();
     }
+
+    /**
+     * Reads the current timer value
+     * @return time since last reset in seconds
+     */
+    public double getTimeSec() {
+
+        // Get current time
+        return missionTimer.seconds();
+    }
+
+    /**
+     * Determines if the specified mission time has been reached
+     * @param milliseconds target mission time in milliseconds
+     * @return true is mission time has been reached, otherwise false
+     */
+    public boolean hasElapsed(double milliseconds) {
+        return missionTimer.milliseconds() >= milliseconds;
+    }
+
+    /**
+     * Determines if the current mission time is within the provided mission time limits
+     * @param startMS starting mission time limit
+     * @param endMS ending mission time limit
+     * @return true if current mission time is within provided limits, otherwise false
+     */
+    public boolean isWithinInterval(double startMs, double endMs) {
+        double elapsed = missionTimer.milliseconds();
+        return elapsed >= startMs && elapsed <= endMs;
+    }    
 
 }
