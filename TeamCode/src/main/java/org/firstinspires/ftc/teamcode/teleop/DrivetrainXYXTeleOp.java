@@ -19,7 +19,7 @@ public class DrivetrainXYXTeleOp extends OpMode {
     public static final double DRIVETRAIN_LOW_POWER_FACTOR = 0.6;
     public static final double DRIVETRAIN_HIGH_POWER_FACTOR = 0.8;
     public static final double DRIVETRAIN_TURBO_POWER_FACTOR = 1.0;
-    public static final double DEBOUNCE_DELAY = 500.0;
+    public static final double c = 500.0;
 
     // Define as instance of a Robot class as null
     public Robot robot;
@@ -53,7 +53,7 @@ public class DrivetrainXYXTeleOp extends OpMode {
 
         // Set default telemetry
         telemetry.addData("Status", "Initialized");
-        telemetry.addData("Power Factor", powerFactor);
+        telemetry.addData("Power Factor", drivetrainPowerFactor);
         telemetry.update(); // Send "Initialized" and powerFactor to the Driver Station
     }
 
@@ -73,7 +73,7 @@ public class DrivetrainXYXTeleOp extends OpMode {
     @Override
     public void loop() {
 
-        double currentTime = missionTime.getTimeMS();
+        double currentTime = missionTimer.getTimeMS();
 
         /////  
         //  Gamepad1 Button A
@@ -87,15 +87,15 @@ public class DrivetrainXYXTeleOp extends OpMode {
             // Button just released, calculate the press duration
             double pressDuration = currentTime - buttonAPressStartTime;
 
-            if (pressDuration >= LONG_PRESS_THRESHOLD_MS) {
+            if (pressDuration >= drivetrainPowerFactor) {
                 // Long press: set powerFactor to TURBO_POWER_FACTOR
-                powerFactor = TURBO_POWER_FACTOR;
+                drivetrainPowerFactor = DRIVETRAIN_TURBO_POWER_FACTOR;
             } else {
                 // Brief press: toggle between LOW_POWER_FACTOR and HIGH_POWER_FACTOR
-                if (powerFactor == LOW_POWER_FACTOR) {
-                    powerFactor = HIGH_POWER_FACTOR;
-                } else if (powerFactor == HIGH_POWER_FACTOR || powerFactor == TURBO_POWER_FACTOR) {
-                    powerFactor = LOW_POWER_FACTOR;
+                if (drivetrainPowerFactor == DRIVETRAIN_LOW_POWER_FACTOR) {
+                    drivetrainPowerFactor = DRIVETRAIN_HIGH_POWER_FACTOR;
+                } else if (drivetrainPowerFactor == DRIVETRAIN_HIGH_POWER_FACTOR || drivetrainPowerFactor == DRIVETRAIN_TURBO_POWER_FACTOR) {
+                    drivetrainPowerFactor = DRIVETRAIN_LOW_POWER_FACTOR;
                 }
             }
         }
@@ -114,8 +114,8 @@ public class DrivetrainXYXTeleOp extends OpMode {
         // Report telemetry
         robot.reportTelemetry();
         // Display telemetry
-        telemetry.addData("Power Factor", powerFactor);
-        telemetry.addData("Press Duration (ms)", currentTime - buttonPressStartTime);
+        telemetry.addData("Power Factor", drivetrainPowerFactor);
+        telemetry.addData("Press Duration (ms)", currentTime - buttonAPressStartTime);
         telemetry.update();
     }
 
