@@ -2,8 +2,8 @@
 package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.hardware.HardwareMap;
-import com.qualcomm.robotcore.util.ElapsedTime;
 import org.firstinspires.ftc.teamcode.subsystems.Drivetrain;
+import org.firstinspires.ftc.teamcode.subsystems.Claw;
 import org.firstinspires.ftc.teamcode.utils.MissionTimer;
 
 /**
@@ -16,35 +16,47 @@ import org.firstinspires.ftc.teamcode.utils.MissionTimer;
  *
  * VERSION   DATE     WHO  DETAIL
  * 00.01.00  11Nov24  SEB  Initial release
+ * 00.01.01  26Nov24  SEB  Add claw to subsystems. Uddate robot to use private subsystems.
  *
  */
 public class Robot {
 
     // Declare robot subsystems as null instance
-    public Drivetrain drivetrain;
+    private Drivetrain drivetrain;
+    private Claw claw;
+    private MissionTimer missionTimer;
 
     /**
      * - Robot Constructor -
-     * Uses HardwareMap to import the drivetrain
+     * Uses HardwareMap to import the robot subsystems
      */
     public Robot(HardwareMap hardwareMap) {
 
+        // Shared resources
+        MissionTimer missionTimer = new MissionTimer();
         // Instantiate robot subsystems
         Drivetrain drivetrain = new Drivetrain(hardwareMap);
-
+        Claw claw = new Claw(hardwareMap, missionTimer);
     }
 
     /**
-     * Initializes robot
+     * Allows public access to the drivetrain subsystem
      */
-    public void init() {
-        drivetrain.init();
+    public void getDrivetrain() {
+        return drivetrain;
     }
 
     /**
-     * Reports robot subsystem telemetry
+     * Allows public access to the claw subsystem
      */
-    public void reportTelemetry() {
-        drivetrain.reportTelemetry();
+    public void getClaw() {
+        return claw;
+    }
+
+        /**
+     * Allows public access to the missionTimer utility
+     */
+    public void getMissionTimer() {
+        return missionTimer;
     }
 }
