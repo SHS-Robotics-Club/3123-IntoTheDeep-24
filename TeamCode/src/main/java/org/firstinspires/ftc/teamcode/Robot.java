@@ -11,7 +11,8 @@ import org.firstinspires.ftc.teamcode.utils.MissionTimer;
  *
  * PUBLIC METHODS:
  *     Robot(hardwareMap) - constructor for instantiating a robot
- *     void init() - initializes the subsystems and utilities of the robot
+ *     Drivetrain getDrivetrain() - allows access to Drivetrain subsystem
+ *     Claw getClaw - Allows access to claw subsystem
  *     void reportTelemetry() - reports robot telemetry information
  *
  * VERSION   DATE     WHO  DETAIL
