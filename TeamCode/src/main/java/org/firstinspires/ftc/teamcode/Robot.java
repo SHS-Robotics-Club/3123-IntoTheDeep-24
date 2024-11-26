@@ -13,6 +13,7 @@ import org.firstinspires.ftc.teamcode.utils.MissionTimer;
  *     Robot(hardwareMap) - constructor for instantiating a robot
  *     Drivetrain getDrivetrain() - allows access to Drivetrain subsystem
  *     Claw getClaw - Allows access to claw subsystem
+ *     MissionTimer getMissionTimer - allows access to Mission Timmer utility
  *     void reportTelemetry() - reports robot telemetry information
  *
  * VERSION   DATE     WHO  DETAIL
