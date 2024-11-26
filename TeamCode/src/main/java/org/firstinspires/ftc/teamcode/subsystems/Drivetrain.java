@@ -19,6 +19,7 @@ import org.firstinspires.ftc.robotcore.external.Telemetry;
  *
  * VERSION   DATE     WHO  DETAIL
  * 00.01.00  11Nov24  SEB  Initial release
+ * 00.01.01  24Nov24  SEB  Minor update.
  *
  */
 public class Drivetrain {
