@@ -12,6 +12,6 @@ The following are high priority improvements to the robot.
 The following are low priority improvement to the robot.
 * None identified.
 
-### Compleion Notes
+### Completion Notes
 24Nov24 Updated Robot class to have private subsystems that are made public by getter methods: i.e. getDrivetrain(), getClaw().
 24Nov24 Added initial Claw code. Slows claw movement to perform in 0.5 second period.
