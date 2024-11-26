@@ -3,7 +3,6 @@ package org.firstinspires.ftc.teamcode.teleop;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import org.firstinspires.ftc.teamcode.Robot;
-import org.firstinspires.ftc.teamcode.utils.MissionTimer;
 
 //@Disabled
 // Possible Groups: Competition, Development, Test, Training
@@ -13,6 +12,10 @@ import org.firstinspires.ftc.teamcode.utils.MissionTimer;
  * DrivetrainXYXTeleOp
  * Controls drivetrain using left joystick X & Y for direction and right joystick X for rotation.
  * Uses button A for power level control, either low power or high power. High power by default.
+ *
+ * VERSION   DATE     WHO  DETAIL
+ * 00.01.00  24Nov24  SEB  Initial release
+ *
  */
 public class DrivetrainXYXTeleOp extends OpMode {
 
@@ -22,10 +25,7 @@ public class DrivetrainXYXTeleOp extends OpMode {
     public static final double c = 500.0;
 
     // Define as instance of a Robot class as null
-    public Robot robot;
-    // Define TeleOp utilities
-    private MissionTimer missionTimer;
-
+    private Robot robot;
     // Define local parameters
     private double drivetrainPowerDirX;
     private double drivetrainPowerDirY;
@@ -43,27 +43,32 @@ public class DrivetrainXYXTeleOp extends OpMode {
 
         // Instantiate a robot using the hardwareMap constructor
         robot = new Robot(hardwareMap);
-        // Instantiate TeleOp utilities
-        missionTimer = new MissionTimer();
         
-        // Initialize robot
-        robot.init();
-        // Initialize TeleOp utilities
-        missionTimer.init();
-
+        // Initialize robot subsystems
+        robot.getDrivetrain().init();
+        robot.getClaw().init();
+        
+        // Initialize shared resources
+        robot.getMissionTimer().init();
+        
         // Set default telemetry
         telemetry.addData("Status", "Initialized");
         telemetry.addData("Power Factor", drivetrainPowerFactor);
+        robot.getClaw().reportTelemetry();
         telemetry.update(); // Send "Initialized" and powerFactor to the Driver Station
     }
 
     /**
      * Initialization complete. Wait here for PLAY.
      */
+    @Override
     public void init_loop() {
 
-        robot.reportTelemetry();
-
+        // Report telemetry while waiting
+        telemetry.addData("Status", "Initialized");
+        telemetry.addData("Power Factor", drivetrainPowerFactor);
+        robot.getClaw().reportTelemetry();
+        telemetry.update(); // Send "Initialized" and powerFactor to
     }
 
     /**
@@ -73,8 +78,9 @@ public class DrivetrainXYXTeleOp extends OpMode {
     @Override
     public void loop() {
 
-        double currentTime = missionTimer.getTimeMS();
+        double currentTime = robot.getMissionTimer().getTimeMS();
 
+        //**********DRIVETRAIN **********/
         /////  
         //  Gamepad1 Button A
         //
@@ -103,19 +109,27 @@ public class DrivetrainXYXTeleOp extends OpMode {
         // Update button state
         buttonAPreviouslyPressed = buttonAPressed;
 
-
         // Sample gamepad1 joysticks
         drivetrainPowerDirX = gamepad1.left_stick_x;
         drivetrainPowerDirY = gamepad1.left_stick_y;
         drivetrainPowerRotate = gamepad1.right_stick_x;
         // Request power application to drivetrain
-        robot.drivetrain.operate(drivetrainPowerDirX, drivetrainPowerDirY, drivetrainPowerRotate, drivetrainPowerFactor);
+        robot.getDrivetrain().operate(drivetrainPowerDirX, drivetrainPowerDirY, drivetrainPowerRotate, drivetrainPowerFactor);
 
-        // Report telemetry
-        robot.reportTelemetry();
-        // Display telemetry
-        telemetry.addData("Power Factor", drivetrainPowerFactor);
-        telemetry.addData("Press Duration (ms)", currentTime - buttonAPressStartTime);
+        //********** CLAW **********/
+        // Open or close the claw based on gamepad input
+        if (gamepad2.left_bumper) {
+            robot.getClaw().open();
+        } else if (gamepad2.right_bumper) {
+            robot.getClaw().close();
+        }
+        // Update Claw subsystems
+        robot.getClaw().update();
+
+        //********** TELEMETRY **********/
+        // Report telemetry from subsystems
+        robot.getDrivetrain().reportTelemetry();
+        robot.getClaw().reportTelemetry();
         telemetry.update();
     }
 
