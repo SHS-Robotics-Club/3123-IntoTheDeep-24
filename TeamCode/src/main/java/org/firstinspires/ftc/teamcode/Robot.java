@@ -44,21 +44,21 @@ public class Robot {
     /**
      * Allows public access to the drivetrain subsystem
      */
-    public void getDrivetrain() {
+    public Drivetrain getDrivetrain() {
         return drivetrain;
     }
 
     /**
      * Allows public access to the claw subsystem
      */
-    public void getClaw() {
+    public Claw getClaw() {
         return claw;
     }
 
         /**
      * Allows public access to the missionTimer utility
      */
-    public void getMissionTimer() {
+    public MissionTimer getMissionTimer() {
         return missionTimer;
     }
 }
