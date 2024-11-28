@@ -1,7 +1,8 @@
-
 package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.hardware.HardwareMap;
+
+import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.subsystems.Drivetrain;
 import org.firstinspires.ftc.teamcode.subsystems.Claw;
 import org.firstinspires.ftc.teamcode.utils.MissionTimer;
@@ -19,6 +20,7 @@ import org.firstinspires.ftc.teamcode.utils.MissionTimer;
  * VERSION   DATE     WHO  DETAIL
  * 00.01.00  11Nov24  SEB  Initial release
  * 00.01.01  26Nov24  SEB  Add claw to subsystems. Uddate robot to use private subsystems.
+ * 00.01.02  28Nov24  SEB  Remove types in constructor. Add telemetry to constructor and other methods.
  *
  */
 public class Robot {
@@ -32,13 +34,19 @@ public class Robot {
      * - Robot Constructor -
      * Uses HardwareMap to import the robot subsystems
      */
-    public Robot(HardwareMap hardwareMap) {
+    public Robot(HardwareMap hardwareMap, Telemetry telemetry) {
 
-        // Shared resources
-        MissionTimer missionTimer = new MissionTimer();
-        // Instantiate robot subsystems
-        Drivetrain drivetrain = new Drivetrain(hardwareMap);
-        Claw claw = new Claw(hardwareMap, missionTimer);
+        try {
+            // Shared resources
+            missionTimer = new MissionTimer();
+            // Instantiate robot subsystems
+            drivetrain = new Drivetrain(hardwareMap, telemetry);
+            claw = new Claw(hardwareMap, telemetry, missionTimer);
+        } catch (Exception e) {
+            telemetry.addData("Error", "Robot initialization failed: " + e.getMessage());
+            telemetry.update();
+            throw new RuntimeException("Robot initialization failed", e);
+        }
     }
 
     /**
