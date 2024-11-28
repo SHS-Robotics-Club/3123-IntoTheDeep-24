@@ -3,6 +3,8 @@ package org.firstinspires.ftc.teamcode.subsystems;
 import static org.firstinspires.ftc.robotcore.external.BlocksOpModeCompanion.telemetry;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.hardware.HardwareMap;
+
+import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.utils.MissionTimer;
 
 /**
@@ -24,6 +26,7 @@ import org.firstinspires.ftc.teamcode.utils.MissionTimer;
  *
  * VERSION   DATE     WHO  DETAIL
  * 00.01.00  24Nov24  SEB  Initial release
+ * 00.01.01  28Nov24  SEB  Add try/catch in constructor. Check for null in init. Pass in telemetry.
  *
  */
 public class Claw {
@@ -45,6 +48,8 @@ public class Claw {
 
     // Shared timer and motion tracking
     private MissionTimer missionTimer;
+    private Telemetry telemetry;
+
     private double targetLeftPosition;
     private double targetRightPosition;
     private double startLeftPosition;
@@ -58,13 +63,20 @@ public class Claw {
      * @param hardwareMap the central store for hardware configuration
      * @param missionTimer a project shared resource
      */
-    public Claw(HardwareMap hardwareMap, MissionTimer missionTimer) {
+    public Claw(HardwareMap hardwareMap, Telemetry telemetry, MissionTimer missionTimer) {
 
-        // Instantiate two servos for the claw
-        this.s_claw_l = hardwareMap.get(Servo.class, "s_claw_l");
-        this.s_claw_r = hardwareMap.get(Servo.class, "s_claw_r");
-        // Define shared resources
+        // Instantiate shared resource
         this.missionTimer = missionTimer;
+        this.telemetry = telemetry;
+
+        try {
+            // Instantiate two servos for the claw
+            this.s_claw_l = hardwareMap.get(Servo.class, "s_claw_l");
+            this.s_claw_r = hardwareMap.get(Servo.class, "s_claw_r");
+        } catch (Exception e) {
+            telemetry.addData("Error", "Claw initialization failed: " + e.getMessage());
+            telemetry.update();
+        }
     }
 
     /**
@@ -73,13 +85,16 @@ public class Claw {
      */
     public void init() {
 
-        // Initialize left servo
-        s_claw_l.setDirection(Servo.Direction.FORWARD);
-        s_claw_l.setPosition(SERVO_LEFT_INIT_POSITION);
-        // Initialize right servo
-        s_claw_r.setDirection(Servo.Direction.REVERSE);
-        s_claw_r.setPosition(SERVO_RIGHT_INIT_POSITION);
-
+        if (s_claw_l != null && s_claw_r != null) {
+            // Initialize left servo
+            s_claw_l.setDirection(Servo.Direction.FORWARD);
+            s_claw_l.setPosition(SERVO_LEFT_INIT_POSITION);
+            // Initialize right servo
+            s_claw_r.setDirection(Servo.Direction.REVERSE);
+            s_claw_r.setPosition(SERVO_RIGHT_INIT_POSITION);
+        } else {
+            telemetry.addData("Error", "Claw servos are not initialized.");
+        }
     }
 
     /**
