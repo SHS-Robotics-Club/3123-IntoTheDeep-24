@@ -20,6 +20,7 @@ import org.firstinspires.ftc.robotcore.external.Telemetry;
  * VERSION   DATE     WHO  DETAIL
  * 00.01.00  11Nov24  SEB  Initial release
  * 00.01.01  24Nov24  SEB  Minor update.
+ * 00.01.02  28Nov24  SEB  Add try/catch to constructor. Add null check to init. Pass in telemetry.
  *
  */
 public class Drivetrain {
@@ -34,27 +35,35 @@ public class Drivetrain {
     private DcMotor bL;
     private DcMotor bR;
     private double powerMax;
+    // Telemetry object
+    private Telemetry telemetry;
 
     /**
      * - Drivetrain Constructor -
      * Instantiates all the drivetrain components
      * @param hardwareMap the central store for hardware configuration
      */
-    public Drivetrain(HardwareMap hardwareMap) {
+    public Drivetrain(HardwareMap hardwareMap, Telemetry telemetry) {
 
-        // Instantiate all four motors as DcMotor class and use the configuration
-        // to connect the port to each existing motor
-        fL = hardwareMap.get(DcMotor.class, "fL");
-        fR = hardwareMap.get(DcMotor.class, "fR");
-        bL = hardwareMap.get(DcMotor.class, "bL");
-        bR = hardwareMap.get(DcMotor.class, "bR");
+        this.telemetry = telemetry;
 
-        // Define motor directions - typically left motors are forward but not always!
-        fL.setDirection(DcMotorSimple.Direction.FORWARD);
-        bL.setDirection(DcMotorSimple.Direction.FORWARD);
-        fR.setDirection(DcMotorSimple.Direction.REVERSE);
-        bR.setDirection(DcMotorSimple.Direction.REVERSE);
+        try {
+            // Instantiate all four motors as DcMotor class and use the configuration
+            // to connect the port to each existing motor
+            fL = hardwareMap.get(DcMotor.class, "fL");
+            fR = hardwareMap.get(DcMotor.class, "fR");
+            bL = hardwareMap.get(DcMotor.class, "bL");
+            bR = hardwareMap.get(DcMotor.class, "bR");
 
+            // Define motor directions - typically left motors are forward but not always!
+            fL.setDirection(DcMotorSimple.Direction.FORWARD);
+            bL.setDirection(DcMotorSimple.Direction.FORWARD);
+            fR.setDirection(DcMotorSimple.Direction.REVERSE);
+            bR.setDirection(DcMotorSimple.Direction.REVERSE);
+        } catch (Exception e) {
+            telemetry.addData("Error", "Drivetrain initialization failed: " + e.getMessage());
+            telemetry.update();
+        }
     }
 
     /**
@@ -62,23 +71,29 @@ public class Drivetrain {
      * Motors are set to zero power and power is based directly from setPower (no PID controller).
      */
     public void init() {
-        // Initialize motors to brake applies without encoders
-        fL.setPower(MOTOR_POWER_ZERO);  // SAFETY: Make sure motor is set to zero
-        fL.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        fL.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        fL.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);  // Encoder data collected but no PID
-        fR.setPower(MOTOR_POWER_ZERO);  // SAFETY: Make sure motor is set to zero
-        fR.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        fR.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        fR.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);  // Encoder data collected but no PID
-        bL.setPower(MOTOR_POWER_ZERO);  // SAFETY: Make sure motor is set to zero
-        bL.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        bL.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        bL.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);  // Encoder data collected but no PID
-        bR.setPower(MOTOR_POWER_ZERO);  // SAFETY: Make sure motor is set to zero
-        bR.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        bR.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        bR.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);  // Encoder data collected but no PID
+
+        if (fL != null && fR != null && bL != null && bR != null) {
+            // Initialize motors to brake applies without encoders
+            fL.setPower(MOTOR_POWER_ZERO);  // SAFETY: Make sure motor is set to zero
+            fL.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+            fL.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+            fL.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);  // Encoder data collected but no PID
+            fR.setPower(MOTOR_POWER_ZERO);  // SAFETY: Make sure motor is set to zero
+            fR.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+            fR.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+            fR.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);  // Encoder data collected but no PID
+            bL.setPower(MOTOR_POWER_ZERO);  // SAFETY: Make sure motor is set to zero
+            bL.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+            bL.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+            bL.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);  // Encoder data collected but no PID
+            bR.setPower(MOTOR_POWER_ZERO);  // SAFETY: Make sure motor is set to zero
+            bR.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+            bR.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+            bR.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);  // Encoder data collected but no PID
+        } else {
+            telemetry.addData("Error", "Drivetrain motors are not initialized.");
+        }
+
     }
 
     /**
