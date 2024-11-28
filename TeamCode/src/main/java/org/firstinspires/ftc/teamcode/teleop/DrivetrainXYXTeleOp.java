@@ -6,7 +6,7 @@ import org.firstinspires.ftc.teamcode.Robot;
 
 //@Disabled
 // Possible Groups: Competition, Development, Test, Training
-@TeleOp(name = "DrivetrainXYXTeleOp", group = "Development")
+@TeleOp(name = "MecanumXYXClaw", group = "Development")
 
 /**
  * DrivetrainXYXTeleOp
@@ -15,6 +15,7 @@ import org.firstinspires.ftc.teamcode.Robot;
  *
  * VERSION   DATE     WHO  DETAIL
  * 00.01.00  24Nov24  SEB  Initial release
+ * 00.01.01  28Nov24  SEB  Correct time check. Move to one gamepad.
  *
  */
 public class DrivetrainXYXTeleOp extends OpMode {
@@ -22,7 +23,7 @@ public class DrivetrainXYXTeleOp extends OpMode {
     public static final double DRIVETRAIN_LOW_POWER_FACTOR = 0.6;
     public static final double DRIVETRAIN_HIGH_POWER_FACTOR = 0.8;
     public static final double DRIVETRAIN_TURBO_POWER_FACTOR = 1.0;
-    public static final double c = 500.0;
+    public static final double LONG_PRESS_THRESHOLD_MS = 500.0;
 
     // Define as instance of a Robot class as null
     private Robot robot;
@@ -42,8 +43,15 @@ public class DrivetrainXYXTeleOp extends OpMode {
     public void init(){
 
         // Instantiate a robot using the hardwareMap constructor
-        robot = new Robot(hardwareMap);
-        
+        robot = new Robot(hardwareMap, telemetry);
+
+        // Make sure all subsystems are properly instantiated
+        if (robot.getDrivetrain() == null || robot.getClaw() == null) {
+            telemetry.addData("Error", "Subsystem initialization failed. Check hardware configuration.");
+            telemetry.update();
+            requestOpModeStop();
+            return;
+        }
         // Initialize robot subsystems
         robot.getDrivetrain().init();
         robot.getClaw().init();
@@ -93,14 +101,15 @@ public class DrivetrainXYXTeleOp extends OpMode {
             // Button just released, calculate the press duration
             double pressDuration = currentTime - buttonAPressStartTime;
 
-            if (pressDuration >= drivetrainPowerFactor) {
+            if (pressDuration >= LONG_PRESS_THRESHOLD_MS) {
                 // Long press: set powerFactor to TURBO_POWER_FACTOR
                 drivetrainPowerFactor = DRIVETRAIN_TURBO_POWER_FACTOR;
             } else {
                 // Brief press: toggle between LOW_POWER_FACTOR and HIGH_POWER_FACTOR
                 if (drivetrainPowerFactor == DRIVETRAIN_LOW_POWER_FACTOR) {
                     drivetrainPowerFactor = DRIVETRAIN_HIGH_POWER_FACTOR;
-                } else if (drivetrainPowerFactor == DRIVETRAIN_HIGH_POWER_FACTOR || drivetrainPowerFactor == DRIVETRAIN_TURBO_POWER_FACTOR) {
+                } else if (drivetrainPowerFactor == DRIVETRAIN_HIGH_POWER_FACTOR ||
+                           drivetrainPowerFactor == DRIVETRAIN_TURBO_POWER_FACTOR) {
                     drivetrainPowerFactor = DRIVETRAIN_LOW_POWER_FACTOR;
                 }
             }
@@ -118,9 +127,9 @@ public class DrivetrainXYXTeleOp extends OpMode {
 
         //********** CLAW **********/
         // Open or close the claw based on gamepad input
-        if (gamepad2.left_bumper) {
+        if (gamepad1.left_bumper) {
             robot.getClaw().open();
-        } else if (gamepad2.right_bumper) {
+        } else if (gamepad1.right_bumper) {
             robot.getClaw().close();
         }
         // Update Claw subsystems
@@ -132,5 +141,4 @@ public class DrivetrainXYXTeleOp extends OpMode {
         robot.getClaw().reportTelemetry();
         telemetry.update();
     }
-
 }
