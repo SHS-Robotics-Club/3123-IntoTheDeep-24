@@ -21,6 +21,8 @@ import org.firstinspires.ftc.robotcore.external.Telemetry;
  * 00.01.00  11Nov24  SEB  Initial release
  * 00.01.01  24Nov24  SEB  Minor update.
  * 00.01.02  28Nov24  SEB  Add try/catch to constructor. Add null check to init. Pass in telemetry.
+ * 00.01.03  29Nov24  SEB  Reverse motor directions (and added minus sign '-' in TeleOp) to fix
+ *                         control directions.
  *
  */
 public class Drivetrain {
@@ -56,10 +58,10 @@ public class Drivetrain {
             bR = hardwareMap.get(DcMotor.class, "bR");
 
             // Define motor directions - typically left motors are forward but not always!
-            fL.setDirection(DcMotorSimple.Direction.FORWARD);
-            bL.setDirection(DcMotorSimple.Direction.FORWARD);
-            fR.setDirection(DcMotorSimple.Direction.REVERSE);
-            bR.setDirection(DcMotorSimple.Direction.REVERSE);
+            fL.setDirection(DcMotorSimple.Direction.REVERSE);
+            bL.setDirection(DcMotorSimple.Direction.REVERSE);
+            fR.setDirection(DcMotorSimple.Direction.FORWARD);
+            bR.setDirection(DcMotorSimple.Direction.FORWARD);
         } catch (Exception e) {
             telemetry.addData("Error", "Drivetrain initialization failed: " + e.getMessage());
             telemetry.update();
@@ -103,6 +105,7 @@ public class Drivetrain {
     public void reportTelemetry() {
 
         // Send motor data as telemetry data
+        telemetry.addData("-----  DRIVETRAIN", "  -----");
         telemetry.addData("mFrontLeft", "Encoder: %2d, Power: %.2f",
                 fL.getCurrentPosition(), fL.getPower());
         telemetry.addData("mBackLeft", "Encoder: %2d, Power: %.2f",
