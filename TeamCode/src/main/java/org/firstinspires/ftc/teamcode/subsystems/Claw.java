@@ -27,18 +27,19 @@ import org.firstinspires.ftc.teamcode.utils.MissionTimer;
  * VERSION   DATE     WHO  DETAIL
  * 00.01.00  24Nov24  SEB  Initial release
  * 00.01.01  28Nov24  SEB  Add try/catch in constructor. Check for null in init. Pass in telemetry.
+ * 00.01.02  29Nov24  SEB  Adjuste claw positions. Verify claw motion softening.
  *
  */
 public class Claw {
 
     // Left servo constants
-    public static final double SERVO_LEFT_INIT_POSITION = 0.4;  // Power to motors before START
-    public static final double SERVO_LEFT_OPEN_POSITION = 0.2;  // Power to motors before START
-    public static final double SERVO_LEFT_CLOSED_POSITION = 0.5;  // Power to motors before START
+    public static final double SERVO_LEFT_INIT_POSITION = 0.55;  // Claw position before START
+    public static final double SERVO_LEFT_OPEN_POSITION = SERVO_LEFT_INIT_POSITION + 0.07;  // Claw open position
+    public static final double SERVO_LEFT_CLOSED_POSITION = SERVO_LEFT_INIT_POSITION - 0.05;  // Power to motors before START
     // Right servo constants
-    public static final double SERVO_RIGHT_INIT_POSITION = 0.4;  // Power to motors before START
-    public static final double SERVO_RIGHT_OPEN_POSITION = 0.2;  // Power to motors before START
-    public static final double SERVO_RIGHT_CLOSED_POSITION = 0.5;  // Maximum power to motors
+    public static final double SERVO_RIGHT_INIT_POSITION = 0.38;  // Power to motors before START
+    public static final double SERVO_RIGHT_OPEN_POSITION = SERVO_RIGHT_INIT_POSITION + 0.07;  // Power to motors before START
+    public static final double SERVO_RIGHT_CLOSED_POSITION = SERVO_RIGHT_INIT_POSITION - 0.05;  // Maximum power to motors
     //
     public static final double CLAW_MOVE_DURATION_MS = 500;
 
@@ -125,6 +126,7 @@ public class Claw {
     public void reportTelemetry() {
 
         // Send motor data as telemetry data
+        telemetry.addData("-----  CLAW", "  -----");
         telemetry.addData("CLAW STATUS: ", "Left Position: %.2f, Right Position: %.2f, Moving: %b",
                 s_claw_l.getPosition(), s_claw_r.getPosition(), isMoving);
     }
