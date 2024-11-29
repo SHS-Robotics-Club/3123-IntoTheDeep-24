@@ -27,7 +27,7 @@ import org.firstinspires.ftc.teamcode.utils.MissionTimer;
  * VERSION   DATE     WHO  DETAIL
  * 00.01.00  24Nov24  SEB  Initial release
  * 00.01.01  28Nov24  SEB  Add try/catch in constructor. Check for null in init. Pass in telemetry.
- * 00.01.02  29Nov24  SEB  Adjuste claw positions. Verify claw motion softening.
+ * 00.01.02  29Nov24  SEB  Adjust claw positions. Verify claw motion softening.
  *
  */
 public class Claw {
