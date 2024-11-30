@@ -33,7 +33,7 @@ When defining a new opmode, the four recommended groups are Competition, Develop
 The Robot class is where the robot subsystems such as drivetrain and claw,
 along with utilities such as a shared free-running mission timer, are defined. In order to access
 the methods defined for these, getter methods are used in the Robot class such as
-robot.getDrivetrain() and robot.getClaw(). For example, the foloowing code initialized the drivetrain,
+robot.getDrivetrain() and robot.getClaw(). For example, the following code initializes the drivetrain,
 claw and mission timer.
 
     robot.getDrivetrain().init();
@@ -42,9 +42,9 @@ claw and mission timer.
 
 #### Drivetrain
 The drivetrain consists of four Mecanum wheels. Power is applied to these wheels using a power factor
-that limits the maximum power.
+that limits the maximum power. The power factor is selected using button A, where a short press toggles between 0.6 and 0.8. Turbo is available by holding the button down slightly longer. The telemetry display indicates the current power factor.
 
 #### Claw
-The claw consists of two regular servos. Both servos are operated together to one of three positions:
-init(), open() or close(). The time it takes to perform these actions is controlled by a constant.
+The claw consists of two regular servos. Both servos are operated together to move the claws to one of three positions:
+init(), open() or close(). The init position is only available after an init. The left bumper is used to open the claw and the right button is used to close the claw. The time it takes to perform these actions is controlled by a constant. 
 
