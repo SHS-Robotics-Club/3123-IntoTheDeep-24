@@ -13,3 +13,10 @@ The DrivetrainXYXTeleOp is based on OpMode and controls the robot using the foll
 * Left Joystick Y control movement in the Y direction.
 * Right Joystick X controls the rotation.
 * Button A toggles the power factor between high power and low power.
+
+### MexDriveClaw
+The MexDriveClaw teleop is an update of DrivetrainXYXTeleOp based on OpMode and controls the robot using the following.
+* Left Joystick X - controls movement in the X direction.
+* Left Joystick Y control movement in the Y direction.
+* Right Joystick X controls the rotation.
+* Button A toggles the power factor between high power and low power.
