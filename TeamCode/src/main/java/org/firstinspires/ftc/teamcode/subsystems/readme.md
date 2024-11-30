@@ -11,7 +11,7 @@ The drivetrain consist of four motors that may be controlled using a gamepad.
          [based on video "FTC Programming 9 of n: Deadline & Toggle Drive Power" by Brandon Pacewic
           see https://www.youtube.com/watch?v=06dOk1S6oEg]
 
-## Claw
+### Claw
 The Claw class defines all the claw components for a robot.
  Connections
      s_claw_l - Servo 0 por
