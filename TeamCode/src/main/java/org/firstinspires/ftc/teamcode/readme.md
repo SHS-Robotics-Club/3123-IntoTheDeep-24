@@ -28,7 +28,7 @@ additional opmode samples are available in
 
 When defining a new opmode, the four recommended groups are Competition, Development, Test, and Training.
 
-### Robot Structure
+## Robot Structure
 
 The Robot class is where the robot subsystems such as drivetrain and claw,
 along with utilities such as a shared free-running mission timer, are defined. In order to access
