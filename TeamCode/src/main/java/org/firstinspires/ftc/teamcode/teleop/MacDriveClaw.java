@@ -6,7 +6,7 @@ import org.firstinspires.ftc.teamcode.Robot;
 
 //@Disabled
 // Possible Groups: Competition, Development, Test, Training
-@TeleOp(name = "MecDriveClaw_v2", group = "Development")
+@TeleOp(name = "MecDriveClaw", group = "Development")
 
 /**
  * MecDriveClaw
