@@ -139,6 +139,7 @@ public class MecDriveClawArm extends OpMode {
         // Update Claw subsystems
         robot.getClaw().update();
 
+/*
         //**********  CLAW ARM  **********/
         double gp2LeftJoystickY = -gamepad2.left_stick_y; // Manual control for arm (invert Y)
 
@@ -153,6 +154,8 @@ public class MecDriveClawArm extends OpMode {
         // Update the claw arm (handles automatic movements)
         robot.getClawArm().update();
 
+*/
+        
         //**********  TELEMETRY  **********/
         // Check if it's time to update telemetry
         if (robot.getMissionTimer().hasElapsed(nextTelemetryUpdateTime)) {
@@ -161,6 +164,7 @@ public class MecDriveClawArm extends OpMode {
             robot.getDrivetrain().reportTelemetry();
             telemetry.addData("Power Factor", drivetrainPowerFactor);
             robot.getClaw().reportTelemetry();
+//            robot.getClawArm().reportTelemetry();
             telemetry.update();
             // Calculate the next update time
             nextTelemetryUpdateTime = robot.getMissionTimer().getTimeMS() + TELEMETRY_UPDATE_PERIOD_MS;
