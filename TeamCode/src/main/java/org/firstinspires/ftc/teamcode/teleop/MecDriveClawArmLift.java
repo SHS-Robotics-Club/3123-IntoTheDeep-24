@@ -32,7 +32,7 @@ public class MecDriveClawArmLift extends OpMode {
     public static final double MOTOR_ZERO_POWER = 0.0;
     private static final double TELEMETRY_UPDATE_PERIOD_MS = 500.0; // Update every 500ms
     // Claw arm constants
-    private static final int CLAW_ARM_DRIVING_BACKWARD_POSITION = 14;
+    private static final int CLAW_ARM_DRIVING_BACKWARD_POSITION = 55;
     private static final int  CLAW_ARM_DRIVING_FORWARD_POSITION = 100;
     private static final double JOYSTICK_DEADZONE = 0.1;
     // Claw lift constants
@@ -50,6 +50,8 @@ public class MecDriveClawArmLift extends OpMode {
     private double drivetrainPowerFactor = DRIVETRAIN_LOW_POWER_FACTOR;
     private double buttonAPressStartTime = 0;
     private boolean buttonAPreviouslyPressed = false;
+    private boolean isClawArmManualControl = true;
+    private boolean isClawLiftManualControl = true;
     private double nextTelemetryUpdateTime = 0.0;
 
     /**
@@ -173,24 +175,32 @@ public class MecDriveClawArmLift extends OpMode {
         if (Math.abs(gp2LeftJoystickY) < JOYSTICK_DEADZONE) { // Dead zone to avoid accidental movement
 
             if (gamepad2.a) {
+                isClawArmManualControl = false;
                 robot.getClawArm().setTargetPosition(CLAW_ARM_DRIVING_BACKWARD_POSITION); // Move arm
             } else if (gamepad2.b) {
+                isClawArmManualControl = false;
                 robot.getClawArm().setTargetPosition(CLAW_ARM_DRIVING_FORWARD_POSITION); // Move arm
-            } else {
+            } else if (isClawArmManualControl) {
                 robot.getClawArm().setManualPower(MOTOR_ZERO_POWER);
+                isClawArmManualControl = false;
             }
         } else {
+            isClawArmManualControl = true;
             robot.getClawArm().setManualPower(gp2LeftJoystickY);
         }
 
         //**********  CLAW LIFT  **********/
         if (gamepad2.dpad_down) {
+            isClawLiftManualControl = false;
             robot.getClawLift().runToPosition(CLAW_LIFT_RETRACT_POSITION); // Retracted
         } else if (gamepad2.dpad_left) {
+            isClawLiftManualControl = false;
             robot.getClawLift().runToPosition(CLAW_LIFT_LOW_BASKET_POSITION); // Lower basket
         } else if (gamepad2.dpad_up){
+            isClawLiftManualControl = false;
             robot.getClawLift().runToPosition(CLAW_LIFT_HIGH_BASKET_POSITION);  // Upper basket
         } else if (gamepad2.dpad_right) {
+            isClawLiftManualControl = false;
             robot.getClawLift().runToPosition(CLAW_LIFT_BAR_POSITION);  // Robot lift bar
         }
 
