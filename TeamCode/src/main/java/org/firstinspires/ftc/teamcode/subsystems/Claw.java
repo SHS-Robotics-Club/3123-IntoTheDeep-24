@@ -33,13 +33,13 @@ import org.firstinspires.ftc.teamcode.utils.MissionTimer;
 public class Claw {
 
     // Left servo constants
-    public static final double SERVO_LEFT_INIT_POSITION = 0.55;  // Claw position before START
-    public static final double SERVO_LEFT_OPEN_POSITION = SERVO_LEFT_INIT_POSITION + 0.07;  // Claw open position
-    public static final double SERVO_LEFT_CLOSED_POSITION = SERVO_LEFT_INIT_POSITION - 0.05;  // Power to motors before START
+    public static final double SERVO_LEFT_INIT_POSITION = 0.9;  // Claw position before START
+    public static final double SERVO_LEFT_OPEN_POSITION = 0.62;  // Claw open position
+    public static final double SERVO_LEFT_CLOSED_POSITION = 0.5;  // Power to motors before START
     // Right servo constants
-    public static final double SERVO_RIGHT_INIT_POSITION = 0.38;  // Power to motors before START
-    public static final double SERVO_RIGHT_OPEN_POSITION = SERVO_RIGHT_INIT_POSITION + 0.07;  // Power to motors before START
-    public static final double SERVO_RIGHT_CLOSED_POSITION = SERVO_RIGHT_INIT_POSITION - 0.05;  // Maximum power to motors
+    public static final double SERVO_RIGHT_INIT_POSITION = 0.72;  // Power to motors before START
+    public static final double SERVO_RIGHT_OPEN_POSITION = 0.45;  // Power to motors before START
+    public static final double SERVO_RIGHT_CLOSED_POSITION = 0.33;  // Maximum power to motors
     //
     public static final double CLAW_MOVE_DURATION_MS = 500;
 
