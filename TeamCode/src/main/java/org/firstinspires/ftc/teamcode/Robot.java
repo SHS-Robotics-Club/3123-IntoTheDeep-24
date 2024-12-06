@@ -4,6 +4,7 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.subsystems.ClawArm;
+import org.firstinspires.ftc.teamcode.subsystems.ClawLift;
 import org.firstinspires.ftc.teamcode.subsystems.Drivetrain;
 import org.firstinspires.ftc.teamcode.subsystems.Claw;
 import org.firstinspires.ftc.teamcode.utils.MissionTimer;
@@ -31,6 +32,7 @@ public class Robot {
     private Drivetrain drivetrain;
     private Claw claw;
     private ClawArm clawArm;
+    private ClawLift clawLift;
     private MissionTimer missionTimer;
 
     /**
@@ -46,6 +48,7 @@ public class Robot {
             drivetrain = new Drivetrain(hardwareMap, telemetry);  // Drivetrain is four motors
             claw = new Claw(hardwareMap, telemetry, missionTimer);  // Claw is two servos
             clawArm = new ClawArm(hardwareMap, telemetry);  // Claw arm is a single motor
+            clawLift = new ClawLift(hardwareMap, telemetry);  // Claw arm is a single motor
         } catch (Exception e) {
             telemetry.addData("Error", "Robot initialization failed: " + e.getMessage());
             telemetry.update();
@@ -72,6 +75,13 @@ public class Robot {
      */
     public ClawArm getClawArm() {
         return clawArm;
+    }
+
+    /**
+     * Allows public access to the claw subsystem
+     */
+    public ClawLift getClawLift() {
+        return clawLift;
     }
 
     /**
