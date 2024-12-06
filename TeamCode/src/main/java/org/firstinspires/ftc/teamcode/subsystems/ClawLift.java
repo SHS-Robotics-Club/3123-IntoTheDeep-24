@@ -50,7 +50,6 @@ import org.firstinspires.ftc.robotcore.external.Telemetry;
     private Telemetry telemetry;
 
     // Current state
-    private boolean isManualControl = true;
     private double manualPower = CLAW_LIFT_POWER_ZERO;
     private int targetPosition = 0; // Target position in degrees
 
@@ -108,8 +107,6 @@ import org.firstinspires.ftc.robotcore.external.Telemetry;
             // Prevent movement beyond limits
             m_claw_lift.setPower(CLAW_LIFT_POWER_ZERO);
         } else {
-            // Set power control to manual mode
-            isManualControl = true;
             // Ensure the motor is back in the normal operating mode
             m_claw_lift.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
             // Run lift
@@ -123,9 +120,6 @@ import org.firstinspires.ftc.robotcore.external.Telemetry;
      * @param position Target position in ticks
      */
     public void runToPosition(int position) {
-
-        // Now using motor PID control
-        isManualControl = false;
 
         // Clamp position to operating limits
         if (targetPosition < CLAW_LIFT_UPPER_STOP_POSITION) {
@@ -165,8 +159,8 @@ import org.firstinspires.ftc.robotcore.external.Telemetry;
      */
     public void getTelemetry() {
         telemetry.addData("-----  CLAW LIFT", "  -----");
-        telemetry.addData("Claw Lift", "Pos: %4d° | Target: %4d° | Manual: %b | Factor: %.2f",
-                m_claw_lift.getCurrentPosition(), targetPosition, isManualControl, CLAW_LIFT_POWER_FACTOR);
+        telemetry.addData("Claw Lift", "Pos: %4d° | Target: %4d° | Factor: %.2f",
+                m_claw_lift.getCurrentPosition(), targetPosition, CLAW_LIFT_POWER_FACTOR);
         telemetry.addData("Claw LIFT Power", m_claw_lift.getPower());
     }
 

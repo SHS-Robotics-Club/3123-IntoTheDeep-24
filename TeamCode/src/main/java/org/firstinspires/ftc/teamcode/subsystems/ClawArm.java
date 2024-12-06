@@ -45,9 +45,9 @@ import org.firstinspires.ftc.robotcore.external.Telemetry;
     public static final double GEAR_RATIO = 1.0; // Ratio between motor and arm shaft
     public static final double TICKS_PER_DEGREE = ENCODER_TICKS_PER_REVOLUTION * GEAR_RATIO / 360.0;
     // Arm stop positions in degrees
-    private static final int CLAW_ARM_LOWER_STOP_POSITION = (int) (3.0 * TICKS_PER_DEGREE); // Minimum arm angle
-    private static final int CLAW_ARM_UPPER_STOP_POSITION = (int) (90.0 * TICKS_PER_DEGREE); // Maximum arm angle
-    private static final int CLAW_ARM_INIT_POSITION = (int) (10.0 * TICKS_PER_DEGREE);
+    private static final int CLAW_ARM_LOWER_STOP_POSITION = 0; // Minimum arm angle
+    private static final int CLAW_ARM_UPPER_STOP_POSITION = 180; // Maximum arm angle
+    private static final int CLAW_ARM_INIT_POSITION = 50;
 
     private static final long SAFETY_TIMEOUT_MS = 5000;  // Loop safety timeout
 
@@ -56,7 +56,6 @@ import org.firstinspires.ftc.robotcore.external.Telemetry;
     private Telemetry telemetry;
 
     // Current state
-    private boolean isManualControl = true;
     private double targetPosition = CLAW_ARM_INIT_POSITION; // Target position in degrees
     private double initialPosition = CLAW_ARM_INIT_POSITION; // Target position in degrees
 
@@ -106,7 +105,6 @@ import org.firstinspires.ftc.robotcore.external.Telemetry;
      * @param power Motor power (-1.0 to 1.0)
      */
     public void setManualPower(double power) {
-        isManualControl = true;
 
         // Clamp power to range
         // power = Math.max(CLAW_ARM_POWER_MIN, Math.min(CLAW_ARM_POWER_MAX, power * CLAW_ARM_POWER_FACTOR));
@@ -119,6 +117,7 @@ import org.firstinspires.ftc.robotcore.external.Telemetry;
             // Prevent movement beyond limits
             m_claw_arm.setPower(0);
         } else {
+            m_claw_arm.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
             m_claw_arm.setPower(power);
         }
     }
@@ -129,8 +128,6 @@ import org.firstinspires.ftc.robotcore.external.Telemetry;
      * @param position Target position in degrees
      */
     public void setTargetPosition(int position) {
-
-        isManualControl = false;
 
         // Clamp position to operating limits
         if (position < CLAW_ARM_LOWER_STOP_POSITION) {
@@ -163,9 +160,6 @@ import org.firstinspires.ftc.robotcore.external.Telemetry;
             telemetry.addData("Error", "Timeout reached while moving to position");
             telemetry.update();
         }
-
-        // Ensure the motor is back in the normal operating mode
-        m_claw_arm.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
     }
 
     /**
@@ -173,8 +167,8 @@ import org.firstinspires.ftc.robotcore.external.Telemetry;
      */
     public void getTelemetry() {
         telemetry.addData("-----  CLAW ARM", "  -----");
-        telemetry.addData("Claw Arm", "Pos: %.2f° | Target: %.2f° | Manual: %b | Factor: %.2f",
-                getCurrentPosition(), targetPosition, isManualControl, CLAW_ARM_POWER_FACTOR);
+        telemetry.addData("Claw Arm", "Pos: %.2f° | Target: %.2f° | Factor: %.2f",
+                getCurrentPosition(), targetPosition, CLAW_ARM_POWER_FACTOR);
         telemetry.addData("Target Encoder", (int) (targetPosition * TICKS_PER_DEGREE)); // DEBUG //
         telemetry.addData("Claw Arm Power", m_claw_arm.getPower()); // DEBUG //
     }
