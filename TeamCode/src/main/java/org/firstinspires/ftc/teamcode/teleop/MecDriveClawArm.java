@@ -26,7 +26,7 @@ public class MecDriveClawArm extends OpMode {
     public static final double LONG_PRESS_THRESHOLD_MS = 500.0;
     public static final double MOTOR_ZERO_POWER = 0.0;
     private static final double TELEMETRY_UPDATE_PERIOD_MS = 500.0; // Update every 500ms
-    private static final int CLAW_ARM_DRIVING_BACKWARD_POSITION = 14;
+    private static final int CLAW_ARM_DRIVING_BACKWARD_POSITION = 55;
     private static final int  CLAW_ARM_DRIVING_FORWARD_POSITION = 100;
     private static final double JOYSTICK_DEADZONE = 0.1;
 
