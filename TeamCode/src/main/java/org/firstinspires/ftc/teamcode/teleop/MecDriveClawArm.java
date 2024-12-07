@@ -39,6 +39,7 @@ public class MecDriveClawArm extends OpMode {
     private double drivetrainPowerFactor = DRIVETRAIN_LOW_POWER_FACTOR;
     private double buttonAPressStartTime = 0;
     private boolean buttonAPreviouslyPressed = false;
+    private boolean isClawArmManualControl = true;
     private double nextTelemetryUpdateTime = 0.0;
 
     /**
@@ -162,13 +163,17 @@ public class MecDriveClawArm extends OpMode {
         if (Math.abs(gp2LeftJoystickY) < JOYSTICK_DEADZONE) { // Dead zone to avoid accidental movement
 
             if (gamepad2.a) {
+                isClawArmManualControl = false;
                 robot.getClawArm().setTargetPosition(CLAW_ARM_DRIVING_BACKWARD_POSITION); // Move arm
             } else if (gamepad2.b) {
+                isClawArmManualControl = false;
                 robot.getClawArm().setTargetPosition(CLAW_ARM_DRIVING_FORWARD_POSITION); // Move arm
-            } else {
+            } else if (isClawArmManualControl) {
                 robot.getClawArm().setManualPower(MOTOR_ZERO_POWER);
+                isClawArmManualControl = false;
             }
         } else {
+            isClawArmManualControl = true;
             robot.getClawArm().setManualPower(gp2LeftJoystickY);
         }
 
