@@ -32,15 +32,22 @@ public class MecDriveClawArmLift extends OpMode {
     public static final double MOTOR_ZERO_POWER = 0.0;
     private static final double TELEMETRY_UPDATE_PERIOD_MS = 500.0; // Update every 500ms
     // Claw arm constants
-    private static final int CLAW_ARM_DRIVING_BACKWARD_POSITION = 55;
-    private static final int  CLAW_ARM_DRIVING_FORWARD_POSITION = 100;
+    private static final int CLAW_ARM_BACKWARD_POSITION = 25;
+    private static final int CLAW_ARM_LIFTING_POSITION = 412;
+    private static final int  CLAW_ARM_FORWARD_POSITION = 880;
     private static final double JOYSTICK_DEADZONE = 0.1;
-    // Claw lift constants
-    private static final int CLAW_LIFT_RETRACT_POSITION = 0; // Minimum arm angle
-    private static final int CLAW_LIFT_LOW_BASKET_POSITION = (int) ((1 * ENCODER_TICKS_PER_REVOLUTION) + 0); // Maximum arm angle
-    private static final int CLAW_LIFT_HIGH_BASKET_POSITION = (int) ((2 * ENCODER_TICKS_PER_REVOLUTION) + 0);
-    private static final int CLAW_LIFT_BAR_POSITION = (int) ((1.5 * ENCODER_TICKS_PER_REVOLUTION) + 0);
-
+    // Course specifics
+    public static final double LOW_BASKET_HEIGHT = 26.0; // inches
+    public static final double HIGH_BASKET_HEIGHT = 43.0; // inches
+    public static final double HANGING_BAR_HEIGHT = 33.0; // inches
+    public static final double RETRACTED_HEIGHT = 0.0; // inches
+    private static final double RETRACTED_CLAW_HEIGHT = 18.0; // claw position in inches
+    private static final double RETRACTED_HOOK_HEIGHT = 9.0; // claw position in inches
+    // Lift safety positions
+    // Arm stop positions in degrees
+    private static final int CLAW_ARM_LIFTING_SAFE_MARGIN = 150; // Minimum arm angle
+    private static final int CLAW_LIFT_LOW_BASKET_ENCODER = 880; // Minimum arm angle
+    private static final int CLAW_LIFT_SAFE_MARGIN = 20; // Minimum arm angle
     // Define as instance of a Robot class as null
     private Robot robot;
     // Define local parameters
@@ -176,13 +183,17 @@ public class MecDriveClawArmLift extends OpMode {
 
             if (gamepad2.a) {
                 isClawArmManualControl = false;
-                robot.getClawArm().setTargetPosition(CLAW_ARM_DRIVING_BACKWARD_POSITION); // Move arm
+                robot.getClawArm().setTargetPosition(CLAW_ARM_LIFTING_POSITION); // Move arm
             } else if (gamepad2.b) {
                 isClawArmManualControl = false;
-                robot.getClawArm().setTargetPosition(CLAW_ARM_DRIVING_FORWARD_POSITION); // Move arm
-            } else if (isClawArmManualControl) {
-                robot.getClawArm().setManualPower(MOTOR_ZERO_POWER);
+                robot.getClawArm().setTargetPosition(CLAW_ARM_FORWARD_POSITION); // Move arm
+            } else if (gamepad2.x) {
                 isClawArmManualControl = false;
+                robot.getClawArm().setTargetPosition(CLAW_ARM_BACKWARD_POSITION); // Move arm
+            } else if (isClawArmManualControl) {
+                // robot.getClawArm().setManualPower(MOTOR_ZERO_POWER);
+                    robot.getClawArm().setTargetPosition( robot.getClawArm().getCurrentPositionEncoder() );
+                    isClawArmManualControl = false;
             }
         } else {
             isClawArmManualControl = true;
@@ -190,18 +201,50 @@ public class MecDriveClawArmLift extends OpMode {
         }
 
         //**********  CLAW LIFT  **********/
-        if (gamepad2.dpad_down) {
+
+        // Check claw arm position first before making any lift changes
+        int currentClawArmPosition = robot.getClawArm().getCurrentPositionEncoder();
+
+        if (currentClawArmPosition < CLAW_ARM_LIFTING_POSITION - CLAW_ARM_LIFTING_SAFE_MARGIN) {
+            // Claw arm is too far back - retract it
             isClawLiftManualControl = false;
-            robot.getClawLift().runToPosition(CLAW_LIFT_RETRACT_POSITION); // Retracted
-        } else if (gamepad2.dpad_left) {
-            isClawLiftManualControl = false;
-            robot.getClawLift().runToPosition(CLAW_LIFT_LOW_BASKET_POSITION); // Lower basket
-        } else if (gamepad2.dpad_up){
-            isClawLiftManualControl = false;
-            robot.getClawLift().runToPosition(CLAW_LIFT_HIGH_BASKET_POSITION);  // Upper basket
-        } else if (gamepad2.dpad_right) {
-            isClawLiftManualControl = false;
-            robot.getClawLift().runToPosition(CLAW_LIFT_BAR_POSITION);  // Robot lift bar
+            robot.getClawLift().runToPositionInches(RETRACTED_HEIGHT); // Retracted
+        } else if (robot.getClawLift().getCurrentPositionEncoder() > CLAW_LIFT_LOW_BASKET_ENCODER + CLAW_LIFT_SAFE_MARGIN) {
+            // Lift is high so check the arm position
+            if (currentClawArmPosition > CLAW_ARM_LIFTING_POSITION + (2 * CLAW_ARM_LIFTING_SAFE_MARGIN)) {
+                // Lift is too high for the arm position - retract it at bit
+                isClawLiftManualControl = false;
+                robot.getClawLift().runToPositionInches(RETRACTED_HEIGHT); // Retracted
+            } else if (currentClawArmPosition > CLAW_ARM_LIFTING_POSITION + CLAW_ARM_LIFTING_SAFE_MARGIN) {
+                isClawLiftManualControl = false;
+                robot.getClawLift().runToPositionInches(LOW_BASKET_HEIGHT - RETRACTED_CLAW_HEIGHT); // Retracted
+            }
+        }
+        // Lift is in a safe position so control it normally
+        double gp2RightJoystickY = -gamepad2.right_stick_y; // Manual control for arm (invert Y)
+
+        if (Math.abs(gp2RightJoystickY) < JOYSTICK_DEADZONE) { // Dead zone to avoid accidental movement
+
+            if (gamepad2.dpad_down) {
+                isClawLiftManualControl = false;
+                robot.getClawLift().runToPositionInches(RETRACTED_HEIGHT); // Retracted
+            } else if (gamepad2.dpad_left) {
+                isClawLiftManualControl = false;
+                robot.getClawLift().runToPositionInches(LOW_BASKET_HEIGHT - RETRACTED_CLAW_HEIGHT); // Lower basket
+            } else if (gamepad2.dpad_up) {
+                isClawLiftManualControl = false;
+                robot.getClawLift().runToPositionInches(HIGH_BASKET_HEIGHT - RETRACTED_CLAW_HEIGHT);  // Upper basket
+            } else if (gamepad2.dpad_right) {
+                isClawLiftManualControl = false;
+                robot.getClawLift().runToPositionInches(HANGING_BAR_HEIGHT - RETRACTED_HOOK_HEIGHT);  // Robot lift bar
+            } else if (isClawLiftManualControl) {
+                // robot.getClawArm().setManualPower(MOTOR_ZERO_POWER);
+                robot.getClawLift().setTargetPositionEncoder(robot.getClawLift().getCurrentPositionEncoder());
+                isClawLiftManualControl = false;
+            }
+        } else {
+            isClawLiftManualControl = true;
+            robot.getClawLift().runManualPower(gp2RightJoystickY);
         }
 
         //**********  TELEMETRY  **********/
