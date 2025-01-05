@@ -15,6 +15,7 @@ import org.firstinspires.ftc.teamcode.Robot;
  *
  * VERSION   DATE     WHO  DETAIL
  * 00.01.00  06Dec24  SEB  Initial release
+ * 00.01.01  04Jan25  SEB  New arm gears and lift by inches rather than encoder.
  *
  */
 public class MecDriveClawArmLift extends OpMode {
