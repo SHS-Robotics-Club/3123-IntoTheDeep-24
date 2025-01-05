@@ -33,20 +33,22 @@ import org.firstinspires.ftc.robotcore.external.Telemetry;
  * VERSION   DATE     WHO  DETAIL
  * 00.01.00  30Nov24  SEB  Initial release
  * 00.01.01  03Dec24  SEB  Modify stop positions.
+ * 00.02.00  02Jan25  SEB  New motor and external gearing.
  *
  */public class ClawArm {
 
     // Constants
     private static final double CLAW_ARM_POWER_MAX = 1.0; // Maximum motor power
     private static final double CLAW_ARM_POWER_MIN = -1.0; // Minimum motor power
-    private static final double CLAW_ARM_POWER_FACTOR = 0.5; // Scales motor power
+    private static final double CLAW_ARM_POWER_FACTOR = 0.1; // Scales motor power
     // goBILDA 5203 Series motor with a 19.2:1 gear ratio
-    public static final int ENCODER_TICKS_PER_REVOLUTION = 537;
-    public static final double GEAR_RATIO = 1.0; // Ratio between motor and arm shaft
-    public static final double TICKS_PER_DEGREE = ENCODER_TICKS_PER_REVOLUTION * GEAR_RATIO / 360.0;
+    public static final double ENCODER_TICKS_PER_REVOLUTION = 1425.1;  // goBILDA  5204-8002-0051
+    public static final double GEAR_RATIO = 2.0; // Ratio between motor and arm shaft
+    public static final double TICKS_PER_DEGREE = ENCODER_TICKS_PER_REVOLUTION * GEAR_RATIO / 360.0;  // 7.917
     // Arm stop positions in degrees
     private static final int CLAW_ARM_LOWER_STOP_POSITION = 0; // Minimum arm angle
-    private static final int CLAW_ARM_UPPER_STOP_POSITION = 180; // Maximum arm angle
+    private static final int CLAW_ARM_UPPER_STOP_POSITION = 1200; // Maximum arm angle
+
     private static final int CLAW_ARM_INIT_POSITION = 50;
 
     private static final long SAFETY_TIMEOUT_MS = 5000;  // Loop safety timeout
@@ -87,7 +89,7 @@ import org.firstinspires.ftc.robotcore.external.Telemetry;
 
         if (m_claw_arm != null) {
             // Initialize motors to brake applies without encoders
-            m_claw_arm.setDirection(DcMotorSimple.Direction.REVERSE);
+            m_claw_arm.setDirection(DcMotorSimple.Direction.FORWARD);  // new motor 02Jan25
             m_claw_arm.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
             m_claw_arm.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
             m_claw_arm.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
@@ -111,7 +113,7 @@ import org.firstinspires.ftc.robotcore.external.Telemetry;
         power = Math.max(CLAW_ARM_POWER_MIN, Math.min(CLAW_ARM_POWER_MAX, power)) * CLAW_ARM_POWER_FACTOR;
 
         // Check if the arm is near the stop positions
-        double currentPosition = getCurrentPosition();
+        double currentPosition = getCurrentPositionEncoder();
         if ((currentPosition <= CLAW_ARM_LOWER_STOP_POSITION && power < 0) ||
                 (currentPosition >= CLAW_ARM_UPPER_STOP_POSITION && power > 0)) {
             // Prevent movement beyond limits
@@ -167,8 +169,8 @@ import org.firstinspires.ftc.robotcore.external.Telemetry;
      */
     public void getTelemetry() {
         telemetry.addData("-----  CLAW ARM", "  -----");
-        telemetry.addData("Claw Arm", "Pos: %.2f° | Target: %.2f° | Factor: %.2f",
-                getCurrentPosition(), targetPosition, CLAW_ARM_POWER_FACTOR);
+        telemetry.addData("Claw Arm", "Pos: %d° | Target: %.2f° | Factor: %.2f",
+                getCurrentPositionEncoder(), targetPosition, CLAW_ARM_POWER_FACTOR);
         telemetry.addData("Target Encoder", (int) (targetPosition * TICKS_PER_DEGREE)); // DEBUG //
         telemetry.addData("Claw Arm Power", m_claw_arm.getPower()); // DEBUG //
     }
@@ -178,7 +180,16 @@ import org.firstinspires.ftc.robotcore.external.Telemetry;
      *
      * @return Current arm position in degrees
      */
-    public double getCurrentPosition() {
+    public double getCurrentPositionDegrees() {
         return m_claw_arm.getCurrentPosition() / TICKS_PER_DEGREE;
+    }
+
+    /**
+     * Gets the current position of the arm in degrees.
+     *
+     * @return Current arm position in degrees
+     */
+    public int getCurrentPositionEncoder() {
+        return m_claw_arm.getCurrentPosition();
     }
 }
