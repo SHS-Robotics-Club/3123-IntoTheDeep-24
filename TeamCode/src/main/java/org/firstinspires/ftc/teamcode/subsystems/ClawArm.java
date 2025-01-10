@@ -34,6 +34,7 @@ import org.firstinspires.ftc.robotcore.external.Telemetry;
  * 00.01.00  30Nov24  SEB  Initial release
  * 00.01.01  03Dec24  SEB  Modify stop positions.
  * 00.02.00  02Jan25  SEB  New motor and external gearing.
+ * 00.02.01  09Jan25  SEB  Reversed claw arm motor to match new gear position.
  *
  */public class ClawArm {
 
@@ -89,7 +90,7 @@ import org.firstinspires.ftc.robotcore.external.Telemetry;
 
         if (m_claw_arm != null) {
             // Initialize motors to brake applies without encoders
-            m_claw_arm.setDirection(DcMotorSimple.Direction.FORWARD);  // new motor 02Jan25
+            m_claw_arm.setDirection(DcMotorSimple.Direction.REVERSE);  // new motor 02Jan25
             m_claw_arm.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
             m_claw_arm.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
             m_claw_arm.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
