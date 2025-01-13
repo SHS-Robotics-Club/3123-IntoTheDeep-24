@@ -3,8 +3,7 @@
 Welcome!
 
 This module, TeamCode, is the place where you will write/paste the code for your team's
-robot controller App. This module is currently empty (a clean slate) but the
-process for adding OpModes is straightforward.
+robot controller App. OpModes are in the teleop folder. The primary robot object class is in this folder. The subsystem objects classes code code (such as Claw, ClawArm and ClawLift) are in the subsystems folder, and there are utilitiy objects classes (such as MissionTimer) in the util folder. The structure of the OpModes and the robot object are described below.
 
 ## Creating your own OpModes
 
@@ -30,10 +29,10 @@ When defining a new opmode, the four recommended groups are Competition, Develop
 
 ### Robot Structure
 
-The Robot class is where the robot subsystems such as drivetrain and claw,
+The Robot object class is where the robot subsystems such as drivetrain and claw,
 along with utilities such as a shared free-running mission timer, are defined. In order to access
-the methods defined for these, getter methods are used in the Robot class such as
-robot.getDrivetrain() and robot.getClaw(). For example, the foloowing code initialized the drivetrain,
+the methods defined for each subsystem, getter methods are used in the Robot object class (such as
+robot.getDrivetrain() and robot.getClaw() ). For example, the foloowing code initializes the drivetrain,
 claw and mission timer.
 
     robot.getDrivetrain().init();
@@ -41,10 +40,17 @@ claw and mission timer.
     robot.getMissionTimer().init();
 
 #### Drivetrain
-The drivetrain consists of four Mecanum wheels. Power is applied to these wheels using a power factor
+The drivetrain object consists of four Mecanum wheels, each with its own motor. Power is applied to these wheels using a power factor
 that limits the maximum power.
 
 #### Claw
-The claw consists of two regular servos. Both servos are operated together to one of three positions:
-init(), open() or close(). The time it takes to perform these actions is controlled by a constant.
+The claw object consists of two regular servos. Both servos are operated together to one of three positions:
+init(), open() or close(). The time it takes to perform these actions is controlled by a time constant to slow down the normal servo speed.
+
+#### ClawArm
+The claw arm object consists of a bar where the claw lift and claw are attached. A motor is used to rotate the bar that starts from a hard stop position and can be move using the X, A and B buttons on the gamepad #2, as well as the left joystick. Power is applied to the claw arm motor using a power factor that limits the maximum power.
+
+#### ClawLift
+The claw lift object consists of a goBILDA quad slide mechanism where the claw is attached at the top. A motor is used to activate the slide up and down using the dpad buttons on the gamepad #2, as well as the right joystick. Power is applied to the claw lift motor using a power factor that limits the maximum power.
+
 
