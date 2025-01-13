@@ -1,3 +1,4 @@
+
 package org.firstinspires.ftc.teamcode.subsystems;
 
 import com.qualcomm.robotcore.hardware.DcMotor;
@@ -35,13 +36,14 @@ import org.firstinspires.ftc.robotcore.external.Telemetry;
  * 00.01.01  03Dec24  SEB  Modify stop positions.
  * 00.02.00  02Jan25  SEB  New motor and external gearing.
  * 00.02.01  09Jan25  SEB  Reversed claw arm motor to match new gear position.
+ * 00.02.02  10Jan25  SEB  Increase power from 0.1 to 0.5.
  *
  */public class ClawArm {
 
     // Constants
     private static final double CLAW_ARM_POWER_MAX = 1.0; // Maximum motor power
     private static final double CLAW_ARM_POWER_MIN = -1.0; // Minimum motor power
-    private static final double CLAW_ARM_POWER_FACTOR = 0.1; // Scales motor power
+    private static final double CLAW_ARM_POWER_FACTOR = 0.5; // Scales motor power
     // goBILDA 5203 Series motor with a 19.2:1 gear ratio
     public static final double ENCODER_TICKS_PER_REVOLUTION = 1425.1;  // goBILDA  5204-8002-0051
     public static final double GEAR_RATIO = 2.0; // Ratio between motor and arm shaft
@@ -133,9 +135,9 @@ import org.firstinspires.ftc.robotcore.external.Telemetry;
     public void setTargetPosition(int position) {
 
         // Clamp position to operating limits
-        if (position < CLAW_ARM_LOWER_STOP_POSITION) {
+        if (position < CLAW_ARM_LOWER_STOP_POSITION) {  // Stop at ground level
             position = CLAW_ARM_LOWER_STOP_POSITION;
-        } else if (position > CLAW_ARM_UPPER_STOP_POSITION) {
+        } else if (position > CLAW_ARM_UPPER_STOP_POSITION) {  // Stop at backward position
             position = CLAW_ARM_UPPER_STOP_POSITION;
         }
 
@@ -194,3 +196,4 @@ import org.firstinspires.ftc.robotcore.external.Telemetry;
         return m_claw_arm.getCurrentPosition();
     }
 }
+
