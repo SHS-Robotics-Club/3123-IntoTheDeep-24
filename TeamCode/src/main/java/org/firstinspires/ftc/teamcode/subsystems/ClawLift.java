@@ -27,14 +27,14 @@ import org.firstinspires.ftc.robotcore.external.Telemetry;
  *
  * VERSION   DATE     WHO  DETAIL
  * 00.01.00  06Dec24  SEB  Initial release
- * 00.01.01  03Jan25  SEB  Move by inches approach.
+ * 00.01.01  10Jan25  SEB  Increase power from 0.3 to 0.6.
  *
  */public class ClawLift {
 
     // Constants
     private static final double CLAW_LIFT_POWER_MAX = 1.0; // Maximum motor power
     private static final double CLAW_LIFT_POWER_MIN = -1.0; // Minimum motor power
-    private static final double CLAW_LIFT_POWER_FACTOR = 0.3; // Scales motor power
+    private static final double CLAW_LIFT_POWER_FACTOR = 0.6; // Scales motor power
     private static final double CLAW_LIFT_POWER_ZERO = 0.0; // Scales motor power
     // goBILDA 5203 Series motor with a 19.2:1 gear ratio, 312 RPM
     private static final double MOTOR_RPM = 312.0; // rpm of the motor
