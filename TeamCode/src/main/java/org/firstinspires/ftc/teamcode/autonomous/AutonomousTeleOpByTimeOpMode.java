@@ -60,10 +60,18 @@ public class AutonomousTeleOpByTimeOpMode extends OpMode {
                     step++;
                     break;
                 case 1:
-                    strafeLeftTime(1.0, 5.0); // Strafe left at full speed for 5 seconds
+                    strafeRightTime(1.0, 2.0); // Strafe left at full speed for 5 seconds
                     step++;
                     break;
                 case 2:
+                    strafeLeftTime(1.0, 4.0); // Strafe left at full speed for 5 seconds
+                    step++;
+                    break;
+                case 3:
+                    strafeRightTime(1.0, 2.0); // Strafe left at full speed for 5 seconds
+                    step++;
+                    break;
+                case 4:
                     runReverseTime(1.0, 1.0); // Move backward at full speed for 1 second
                     step++;
                     break;
